@@ -5,6 +5,17 @@
 
 GUI::GUI(const Diary & diary_) : diary(diary_) {}
 
+void GUI::cls()
+{
+    #ifdef _WIN32
+
+    system("cls");
+
+    #else
+    system("clear");
+    #endif // defined
+}
+
 void GUI::exec()
 {
     while(true)
@@ -14,7 +25,7 @@ void GUI::exec()
         std::cin >> command;
         std::cin.sync();
         if(command == "cls" || command == "clear") {
-            system("cls");
+            cls();
         }
         else if(command == "help") {
             help();
@@ -83,19 +94,19 @@ void GUI::exec()
     std::cout << "\n\n---------- Diary ----------\n\n";
 }
 
-void GUI::help()
-{
-    std::cout << "help -> show this message\n";
-    std::cout << "new -> create new record for this day\n";
-    std::cout << "read\n\t"
-              << "all -> show all records in the diary\n\t"
-              << "today -> show all records for today\n\t"
-              << "date -> format(day_month_year); show all records for entered date\n";
-    std::cout << "delete\n\t"
-              << "all -> delete all records in the diary\n\t"
-              << "today -> delete all records for today\n\t"
-              << "date -> format(day_month_year); delete all records for entered date\n";
-    std::cout << "list -> displays a list of dates in which records were made\n";
-    std::cout << "clear, cls -> clear the console\n";
-    std::cout << "quit, exit -> exit from Diary!\n";
+void GUI::help() {
+  std::cout <<
+    "help -> show this message\n"
+    "new -> create new record for this day\n"
+    "read\n"
+    "    all -> show all records in the diary\n"
+    "    today -> show all records for today\n"
+    "    date -> format(day_month_year); show all records for entered date\n"
+    "delete\n"
+    "    all -> delete all records in the diary\n"
+    "    today -> delete all records for today\n"
+    "    date -> format(day_month_year); delete all records for entered date\n"
+    "list -> displays a list of dates in which records were made\n"
+    "clear, cls -> clear the console\n"
+    "quit, exit -> exit from Diary!\n";
 }

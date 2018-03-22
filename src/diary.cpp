@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <cstring>
 
 Diary::Diary(const std::string & listfile, const std::string & recordextension) : listFile(listfile), recordExtension(recordextension)
@@ -40,20 +41,20 @@ bool Diary::addToList(const std::string & fileName)
 void Diary::showList()
 {
     std::cout << "\n---------- List -----------\n\n";
-    std::vector<std::string> listF = getList();
-    for(int i = 0; i < listF.size(); ++i)
+    auto files = getList();
+    for(const auto& file : files)
     {
-        std::cout << listF[i] << std::endl;
+        std::cout << file << std::endl;
     }
     std::cout << "--------------------------\n";
 }
 
 bool Diary::deleteAll()
 {
-    std::vector<std::string> listF = getList();
-    for(int i = 0; i < listF.size(); ++i)
+    auto files = getList();
+    for(const auto & file : files)
     {
-        std::remove((listF[i] + recordExtension).c_str());
+        std::remove((file + recordExtension).c_str());
     }
     std::ofstream file;
     file.open(listFile);
@@ -63,18 +64,19 @@ bool Diary::deleteAll()
 
 void Diary::showAll()
 {
-    std::vector<std::string> listF = getList();
-    for(int i = 0; i < listF.size(); ++i)
+    auto files = getList();
+    for(const auto & file : files)
     {
-        showPage(listF[i]);
+        showPage(file);
     }
 }
 
 void Diary::showPage(std::string fileName)
 {
-    fileName += recordExtension;
-    if(fileName.size() <= recordExtension.size())
+    if(fileName.length() == 0) {
         return;
+    }
+    fileName += recordExtension;
     std::ifstream file;
     file.open(fileName.c_str());
     if(!file.is_open())
@@ -94,13 +96,9 @@ bool Diary::newRecord()
     fileName += secondary.getToday();
     Record record;
     record.introduce();
-    std::vector<std::string> files = getList();
-    for(int i = 0; i < files.size(); ++i)
-    {
-        if(files[i] == fileName)
-            break;
-        else if(i == files.size()-1)
-            addToList(fileName);
+    auto files = getList();
+    if(std::find(files.begin(), files.end(), fileName) == files.end()) {
+        addToList(fileName);
     }
     Page page(fileName + recordExtension);
     return page.addRecord(record);
@@ -110,6 +108,13 @@ bool Diary::deletePage(std::string fileName)
 {
     std::string forDelete = fileName;
     forDelete += recordExtension;
+    std::ifstream file_;
+    file_.open(forDelete);
+    if(!file_.is_open())
+    {
+        std::cout << "\nERROR: file " << forDelete << " not found!\n\n";
+        return false;
+    }
     std::remove(forDelete.c_str());
     std::ofstream temp;
     temp.open("temp.f");
@@ -126,7 +131,7 @@ bool Diary::deletePage(std::string fileName)
         read >> str;
         read.get();
         if(str != fileName)
-            temp << str;
+            temp << str << std::endl;
     }
     read.close();
     temp.close();
@@ -148,6 +153,7 @@ bool Diary::deletePage(std::string fileName)
     }
     temp1.close();
     listF.close();
+    std::remove("temp.f");
     return true;
 }
 
@@ -160,7 +166,7 @@ std::vector<std::string> Diary::getList()
     if(!listF.is_open())
     {
         std::cout << "ERROR: list file not found!\n\n";
-        return std::vector<std::string>(0);
+        return {};
     }
     std::string temp;
     while(!listF.eof())
