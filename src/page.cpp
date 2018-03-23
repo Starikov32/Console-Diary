@@ -5,7 +5,7 @@
 #include "diary.h"
 #include <cstring>
 
-Page::Page(const std::string & filename) : fileName(filename)
+Page::Page(const std::string & fileName) : fileName(fileName)
 {
     std::ofstream file;
     file.open(fileName.c_str(), std::ios::app);
@@ -33,6 +33,7 @@ void Page::show()
         std::cout << temp << std::endl;
     }
     std::cout << "--------------------------------\n";
+    file.close();
 }
 
 bool Page::addRecord(const Record & record)

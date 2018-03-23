@@ -1,47 +1,40 @@
 #include "secondary.h"
 #include <ctime>
 #include <string>
+#include <cstdio>
 
-std::string Secondary::intToString(int number)
+namespace secondary
 {
-    int temp = number, size = 1;
-    std::string str = "";
-    while(temp)
+    std::string intToString(int value)
     {
-        size++;
-        str += char((temp % 10) + 48);
-        temp /= 10;
+        char a[100];
+        sprintf(a, "%i", value);
+        return a;
     }
-    for(int i = 0, j = size-2; i < j; i++, j--)
+
+    std::string getToday()
     {
-        std::swap(str[j], str[i]);
+        time_t seconds = time(nullptr);
+        std::string date = "";
+        tm* timeInfo = localtime(&seconds);
+        date += intToString(timeInfo->tm_mday);
+        date += "_";
+        date += intToString(timeInfo->tm_mon + 1);
+        date += "_";
+        date += intToString(timeInfo->tm_year + 1900);
+        return date;
     }
-    return str;
-}
 
-std::string Secondary::getToday()
-{
-    time_t seconds = time(nullptr);
-    std::string date = "";
-    tm* timeinfo = localtime(&seconds);
-    date += intToString(timeinfo->tm_mday);
-    date += "_";
-    date += intToString(timeinfo->tm_mon + 1);
-    date += "_";
-    date += intToString(timeinfo->tm_year + 1900);
-    return date;
-}
-
-
-std::string Secondary::getTime()
-{
-    time_t seconds = time(nullptr);
-    std::string time = "";
-    tm* timeinfo = localtime(&seconds);
-    time += intToString(timeinfo->tm_hour);
-    time += ":";
-    time += intToString(timeinfo->tm_min);
-    time += ":";
-    time += intToString(timeinfo->tm_sec);
-    return time;
-}
+    std::string getTime()
+    {
+        time_t seconds = time(nullptr);
+        std::string time = "";
+        tm* timeInfo = localtime(&seconds);
+        time += intToString(timeInfo->tm_hour);
+        time += ":";
+        time += intToString(timeInfo->tm_min);
+        time += ":";
+        time += intToString(timeInfo->tm_sec);
+        return time;
+    }
+} // namespace secondary

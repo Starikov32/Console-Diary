@@ -9,7 +9,7 @@
 class Page
 {
     public:
-        explicit Page(const std::string & filename);
+        explicit Page(const std::string & fileName);
         void show();
         bool addRecord(const Record & record);
     private:

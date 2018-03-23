@@ -3,12 +3,11 @@
 
 #include <string>
 
-class Secondary
+namespace secondary
 {
-    public:
-        std::string intToString(int number);
-        std::string getToday();
-        std::string getTime();
-};
+    std::string intToString(int value);
+    std::string getToday();
+    std::string getTime();
+} // namespace secondary
 
 #endif // SECONDARY_H

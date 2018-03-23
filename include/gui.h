@@ -6,12 +6,13 @@
 class GUI
 {
     public:
-        GUI(const Diary & diary_);
+        GUI(const Diary & diary);
         void exec();
     private:
         Diary diary;
 
         void help();
+        void cls();
 };
 
 #endif // GUI_H

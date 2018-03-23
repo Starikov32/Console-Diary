@@ -2,8 +2,9 @@
 #include <iostream>
 #include "diary.h"
 #include <windows.h>
+#include "secondary.h"
 
-GUI::GUI(const Diary & diary_) : diary(diary_) {}
+GUI::GUI(const Diary & diary) : diary(diary) {}
 
 void GUI::cls()
 {
@@ -37,7 +38,6 @@ void GUI::exec()
         }
         else if(command == "read")
         {
-            Secondary secondary;
             std::string subCommand;
             std::cout << "Enter subCommand >> ";
             std::cin >> subCommand;
@@ -46,7 +46,7 @@ void GUI::exec()
                 diary.showAll();
             }
             else if(subCommand == "today") {
-                diary.showPage(secondary.getToday());
+                diary.showPage(secondary::getToday());
             }
             else {
                 diary.showPage(subCommand);
@@ -57,7 +57,6 @@ void GUI::exec()
         }
         else if(command == "delete")
         {
-            Secondary secondary;
             std::string subCommand;
             std::cout << "Enter subCommand >> ";
             std::cin >> subCommand;
@@ -70,7 +69,7 @@ void GUI::exec()
                 }
             }
             else if(subCommand == "today") {
-                if(!diary.deletePage(secondary.getToday())) {
+                if(!diary.deletePage(secondary::getToday())) {
                     std::cout << "\nERROR: failed to delete today records!\n\n";
                 } else {
                     std::cout << "Delete successful!\n";

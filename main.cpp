@@ -2,7 +2,6 @@
 #include "record.h"
 #include "diary.h"
 #include "gui.h"
-#include "secondary.h"
 #include <iostream>
 
 int main()

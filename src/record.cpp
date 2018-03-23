@@ -1,12 +1,12 @@
 #include "record.h"
+#include "secondary.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>
 
 Record::Record() : text("")
 {
-    Secondary secondary;
-    time = secondary.getTime();
+    time = secondary::getTime();
 }
 
 void Record::show()

@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cstring>
 
-Diary::Diary(const std::string & listfile, const std::string & recordextension) : listFile(listfile), recordExtension(recordextension)
+Diary::Diary(const std::string & listFile, const std::string & recordExtension) : listFile(listFile), recordExtension(recordExtension)
 {
     std::ifstream file;
     file.open(listFile.c_str());
@@ -18,31 +18,31 @@ Diary::Diary(const std::string & listfile, const std::string & recordextension) 
         std::cout << "Extensions of your page files: " << recordExtension << "\n\n";
     }
     file.close();
-    std::ofstream listF;
-    listF.open(listFile.c_str(), std::ios::app);
+    std::ofstream fileList;
+    fileList.open(listFile.c_str(), std::ios::app);
     std::cout << "\n---------- Diary ----------\n\n";
-    listF.close();
+    fileList.close();
 }
 
 bool Diary::addToList(const std::string & fileName)
 {
-    std::ofstream listF;
-    listF.open(listFile.c_str(), std::ios::app);
-    if(!listF.is_open())
+    std::ofstream fileList;
+    fileList.open(listFile.c_str(), std::ios::app);
+    if(!fileList.is_open())
     {
         std::cout << "ERROR: list file not found!\n\n";
         return false;
     }
-    listF << fileName << std::endl;
-    listF.close();
+    fileList << fileName << std::endl;
+    fileList.close();
     return true;
 }
 
 void Diary::showList()
 {
     std::cout << "\n---------- List -----------\n\n";
-    auto files = getList();
-    for(const auto& file : files)
+    auto fileList = getList();
+    for(const auto& file : fileList)
     {
         std::cout << file << std::endl;
     }
@@ -51,8 +51,8 @@ void Diary::showList()
 
 bool Diary::deleteAll()
 {
-    auto files = getList();
-    for(const auto & file : files)
+    auto fileList = getList();
+    for(const auto & file : fileList)
     {
         std::remove((file + recordExtension).c_str());
     }
@@ -64,8 +64,8 @@ bool Diary::deleteAll()
 
 void Diary::showAll()
 {
-    auto files = getList();
-    for(const auto & file : files)
+    auto fileList = getList();
+    for(const auto & file : fileList)
     {
         showPage(file);
     }
@@ -91,13 +91,12 @@ void Diary::showPage(std::string fileName)
 
 bool Diary::newRecord()
 {
-    Secondary secondary;
     std::string fileName;
-    fileName += secondary.getToday();
+    fileName += secondary::getToday();
     Record record;
     record.introduce();
-    auto files = getList();
-    if(std::find(files.begin(), files.end(), fileName) == files.end()) {
+    auto fileList = getList();
+    if(std::find(fileList.begin(), fileList.end(), fileName) == fileList.end()) {
         addToList(fileName);
     }
     Page page(fileName + recordExtension);
@@ -108,51 +107,52 @@ bool Diary::deletePage(std::string fileName)
 {
     std::string forDelete = fileName;
     forDelete += recordExtension;
-    std::ifstream file_;
-    file_.open(forDelete);
-    if(!file_.is_open())
+    std::ifstream fileCheck;
+    fileCheck.open(forDelete);
+    if(!fileCheck.is_open())
     {
         std::cout << "\nERROR: file " << forDelete << " not found!\n\n";
         return false;
     }
+    fileCheck.close();
     std::remove(forDelete.c_str());
-    std::ofstream temp;
-    temp.open("temp.f");
-    std::ifstream read;
-    read.open(listFile.c_str());
-    if(!read.is_open())
+    std::ofstream tempFile;
+    tempFile.open("temp.f");
+    std::ifstream fileList;
+    fileList.open(listFile.c_str());
+    if(!fileList.is_open())
     {
         std::cout << "\nERROR: failed to open list file!\n\n";
         return false;
     }
-    while(!read.eof())
+    while(!fileList.eof())
     {
         std::string str;
-        read >> str;
-        read.get();
+        fileList >> str;
+        fileList.get();
         if(str != fileName)
-            temp << str << std::endl;
+            tempFile << str << std::endl;
     }
-    read.close();
-    temp.close();
+    fileList.close();
+    tempFile.close();
     std::remove(listFile.c_str());
-    std::ofstream listF;
-    std::ifstream temp1;
-    temp1.open("temp.f");
-    listF.open(listFile.c_str());
-    if(!listF.is_open())
+    std::ofstream fileList1;
+    std::ifstream tempFile1;
+    tempFile1.open("temp.f");
+    fileList1.open(listFile.c_str());
+    if(!fileList1.is_open())
     {
         std::cout << "\nERROR: failed to open list file!\n\n";
         return false;
     }
-    while(!temp1.eof())
+    while(!tempFile1.eof())
     {
         std::string str;
-        getline(temp1, str);
-        listF << str;
+        getline(tempFile1, str);
+        fileList1 << str << std::endl;
     }
-    temp1.close();
-    listF.close();
+    tempFile1.close();
+    fileList1.close();
     std::remove("temp.f");
     return true;
 }
@@ -160,21 +160,20 @@ bool Diary::deletePage(std::string fileName)
 std::vector<std::string> Diary::getList()
 {
     std::vector<std::string> files;
-    files.reserve(10);
-    std::ifstream listF;
-    listF.open(listFile.c_str());
-    if(!listF.is_open())
+    std::ifstream fileList;
+    fileList.open(listFile.c_str());
+    if(!fileList.is_open())
     {
         std::cout << "ERROR: list file not found!\n\n";
         return {};
     }
-    std::string temp;
-    while(!listF.eof())
+    std::string tempStr;
+    while(!fileList.eof())
     {
-        getline(listF, temp);
-        files.push_back(temp);
+        getline(fileList, tempStr);
+        files.push_back(tempStr);
     }
-    listF.close();
+    fileList.close();
     files.shrink_to_fit();
     return files;
 }
