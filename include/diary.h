@@ -9,6 +9,7 @@ class Diary
 {
     public:
         Diary(const std::string & listfile, const std::string & recordextension);
+        ~Diary();
         void showList();
         bool deleteAll();
         void showAll();
@@ -18,6 +19,7 @@ class Diary
     private:
         std::string listFile;
         std::string recordExtension;
+        std::vector<std::string> filesList;
 
         bool addToList(const std::string & fileName);
         std::vector<std::string> getList();
